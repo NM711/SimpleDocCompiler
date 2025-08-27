@@ -7,9 +7,9 @@ import src/sdcompiler
 
 var compiler = Compiler()
 
-let path: string = "<YourPath>"
+let path: string = "./test.sd"
 
-var html = sdcompiler(path)
+var html = compiler.compile(CompilationMode.FILE, path)
 
 stdout.write(html)
 ```

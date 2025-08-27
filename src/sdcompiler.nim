@@ -5,6 +5,10 @@ import std/tables
 type Compiler* = ref object
   source: string
 
+type CompilationMode* = enum
+  FILE,
+  STRING_LITERAL
+
 method accept(self: Node, visitor: Compiler): void {.base.}
 
 proc openTag(self: Compiler, element: string): void =
@@ -198,25 +202,21 @@ method accept(self: CodeBlockNode, visitor: Compiler): void =
 method accept(self: MetaNode, visitor: Compiler): void =
   visitor.visit(self)
 
-proc compile*(self: Compiler, path: string): string =
-  self.source = "<!DOCTYPE html>"
-  self.openTag("html")
+# Note that "body" can be either a path or a string literal depending on the set mode.
 
+proc compile*(self: Compiler, mode: CompilationMode, body: string): string =
   var sdparser = Parser()
-  sdparser.setPath(path)
+
+  if mode == CompilationMode.FILE:  
+    sdparser.setPath(body)
+  else:
+    sdparser.setContent(body)
+
+
   sdparser.execute()
 
-  var isBodyStart = true
-
   for node in sdparser.getNodes():
-
-    if node.kind != NodeKind.META and isBodyStart:
-      self.openTag("body")
-      isBodyStart = false
-
     node.accept(self)
-  self.closeTag("body")
-  self.closeTag("html")
 
   var tmp = self.source
   self.source = ""

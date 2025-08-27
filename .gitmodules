@@ -1,6 +1,3 @@
-    [submodule "SimpleDocParser"]
-        path = ./lib/SimpleDocParser
-        url = https://github.com/NM711/SimpleDocParser.git
 [submodule "lib/SimpleDocParser"]
 	path = lib/SimpleDocParser
 	url = https://github.com/NM711/SimpleDocParser.git
